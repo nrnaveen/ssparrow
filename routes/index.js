@@ -45,7 +45,9 @@ router.post('/', async function (req, res, next) {
     return res.end(screenshot);
   } catch (err) {
     console.log(err);
-    return next(new errs.InternalServerError(err.message));
+    res.status(400).send({
+      err: err.message,
+    });
   }
 });
 
