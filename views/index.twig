@@ -1,6 +1,7 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
+  <div id="loader" class="lds-dual-ring display-none overlay"></div>
   <h1>Welcome to {{title}}</h1>
   <form id="formoid" action="/" title="" method="post">
     <div class="form-group">
@@ -37,7 +38,6 @@
   </form>
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easy-loading/1.3.0/jquery.loading.js" integrity="sha512-l9jYjbia7nXf4ZpR3dFSAjOOygUAytRrqmT32a5cBZjVpIUdFgBzIPQPPhJ6gh/NwaIerUEsn3vkEVQzQExGag==" crossorigin="anonymous"></script>
   <script>
     $("#formoid").submit(function(event) {
       /* stop form from submitting normally */
@@ -46,7 +46,7 @@
         format = $('#imageFormat').val(),
         width = $('#width').val(),
         height = $('#height').val();
-      {# $("body").loading('start'); #}
+      $('#loader').removeClass('display-none');
       axios({
         method: 'post',
         url: '/',
@@ -61,10 +61,10 @@
 					link.setAttribute('download', `${fileName}.${format}`);
 					document.body.appendChild(link);
 					link.click();
-          {# $("body").loading('stop'); #}
+          $('#loader').addClass('display-none');
       }).catch(function (error) {
         console.log(error);
-        {# $("body").loading('stop'); #}
+        $('#loader').addClass('display-none');
       }); 
   });
   </script>

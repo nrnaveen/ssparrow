@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var puppeteer = require('puppeteer');
 var _ = require('lodash');
-var fs = require('fs');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -41,7 +40,6 @@ router.post('/', async function (req, res, next) {
     await browser.close();
     res.setHeader('Content-disposition', `attachment; filename=${fileName}.${format}`);
     res.setHeader('Content-type', contentType);
-    fs.writeFileSync(`${fileName}.${format}`, screenshot);
     return res.end(screenshot);
   } catch (err) {
     console.log(err);
