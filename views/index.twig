@@ -1,0 +1,71 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>Welcome to {{title}}</h1>
+  <form id="formoid" action="/" title="" method="post">
+    <div class="form-group">
+      <label for="url">URL</label>
+      <input type="url" class="form-control" id="url" aria-describedby="urlHelp" placeholder="Enter URL" required>
+      <small id="urlHelp" class="form-text text-muted">Please enter site URL to take Screen Shot.</small>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <label for="width">Width</label>
+        <input type="number" class="form-control" id="width" aria-describedby="widthHelp" placeholder="Enter Width" min="200" max="1024" step="1">
+        <small id="widthHelp" class="form-text text-muted">Please enter Width of Screen Shot.</small>
+      </div>
+      <div class="col">
+        <label for="height">Height</label>
+        <input type="number" class="form-control" id="height" aria-describedby="heightHelp" placeholder="Enter Height" min="200" max="1800" step="1">
+        <small id="heightHelp" class="form-text text-muted">Please enter Height of Screen Shot.</small>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="imageFormat">Screen Shot Format</label>
+      <select class="form-control" id="imageFormat" aria-describedby="imageFormatHelp">
+        <option value="jpeg">jpeg</option>
+        <option value="png">png</option>
+        <option value="pdf">pdf</option>
+      </select>
+      <small id="imageFormatHelp" class="form-text text-muted">Please Select Format of Screen Shot.</small>
+    </div>
+    <div class="form-row">
+      <div class="col">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </form>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easy-loading/1.3.0/jquery.loading.js" integrity="sha512-l9jYjbia7nXf4ZpR3dFSAjOOygUAytRrqmT32a5cBZjVpIUdFgBzIPQPPhJ6gh/NwaIerUEsn3vkEVQzQExGag==" crossorigin="anonymous"></script>
+  <script>
+    $("#formoid").submit(function(event) {
+      /* stop form from submitting normally */
+      event.preventDefault();
+      let url = $('#url').val(),
+        format = $('#imageFormat').val(),
+        width = $('#width').val(),
+        height = $('#height').val();
+      {# $("body").loading('start'); #}
+      axios({
+        method: 'post',
+        url: '/',
+        data: { url, format, width, height, },
+        responseType: 'blob', // important
+      }).then(function (res) {
+        console.log(res.data);
+        let blobUrl = window.URL.createObjectURL(new Blob([res.data])),
+						link = document.createElement('a');
+					link.href = blobUrl;
+          let fileName = url.split('/')[2];
+					link.setAttribute('download', `${fileName}.${format}`);
+					document.body.appendChild(link);
+					link.click();
+          {# $("body").loading('stop'); #}
+      }).catch(function (error) {
+        console.log(error);
+        {# $("body").loading('stop'); #}
+      }); 
+  });
+  </script>
+{% endblock %}
